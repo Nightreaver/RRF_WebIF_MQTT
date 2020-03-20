@@ -1,0 +1,20 @@
+[Unit]
+Description=RepRap Firmware WebIF MQTT Client/Daemon
+Documentation=https://github.com/Nightreaver/RRF_WebIF_MQTT
+After=network.target bluetooth.service mosquitto.service
+
+[Service]
+Type=notify
+User=daemon
+Group=daemon
+WorkingDirectory=/opt/rrf-mqtt-daemon
+ExecStart=/opt/rrf-mqtt-daemon/src/service.py
+StandardOutput=null
+#StandardOutput=syslog
+#SyslogIdentifier=rrfd
+StandardError=journal
+Environment=PYTHONUNBUFFERED=true
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
