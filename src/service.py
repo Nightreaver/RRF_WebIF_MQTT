@@ -206,7 +206,6 @@ if reporting_mode == 'mqtt-json':
         print(printer_name)
         printer_ip = printer.get("ip")
         print(get_printer_data(printer_ip, 2))
-    #mqtt_client.publish('{}/$announce'.format(base_topic), json.dumps(flores_info), retain=True)
     sleep(0.5)
     print()
 
@@ -215,7 +214,6 @@ while True:
         print(printer_name)
         printer_ip = printer.get("ip")
         data = (get_printer_data(printer_ip))
-        #data2 = (get_printer_data(printer_ip, 2))
 
         topic_path = '{}/{}/{}'.format(base_topic, device_id, printer_name)
 
@@ -225,15 +223,25 @@ while True:
             status = "on"
         mqtt_client.publish('{}/status/{}'.format(topic_path, status))
         print(data)
-        #print(data2)
-
-
-        #mqtt_client.publish('{}/$name'.format(topic_path), printer['name'], 1, True)
 
         if reporting_mode == 'mqtt-json':
             print_line('Publishing to MQTT topic "{}/{}"'.format(base_topic, printer_name))
             mqtt_client.publish('{}/{}'.format(base_topic, printer_name), json.dumps(data))
             sleep(0.5) # some slack for the publish roundtrip and callback function
+        elif reporting_mode == 'thingsboard-json':
+            pass
+        elif reporting_mode == 'homeassistant-mqtt':
+            pass
+        elif reporting_mode == 'mqtt-homie':
+            pass
+        elif reporting_mode == 'mqtt-smarthome':
+            pass
+        elif reporting_mode == 'wirenboard-mqtt':
+            pass
+        elif reporting_mode == 'json':
+            pass
+        else:
+            raise NameError('Unexpected reporting_mode.')
 
     if daemon_enabled:
         print_line('Sleeping ({} seconds) ...'.format(sleep_period))
