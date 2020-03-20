@@ -203,11 +203,11 @@ if reporting_mode == 'mqtt-json':
 
     printer_info = dict()
     for [printer_name, printer] in printers.items():
-        print(printer_name)
+        #print(printer_name)
         printer_ip = printer.get("ip")
-        print(get_printer_data(printer_ip, 2))
+        #print(get_printer_data(printer_ip, 2))
     sleep(0.5)
-    print()
+    #print()
 
 while True:
     for [printer_name, printer] in printers.items():
