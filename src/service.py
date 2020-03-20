@@ -18,8 +18,8 @@ import requests
 
 
 project_name = 'RRF WebGUI MQTT Client/Daemon'
-project_url = 'https://github.com/'
-sleep_period = 2
+project_url = 'https://github.com/Nightreaver/RRF_WebIF_MQTT'
+sleep_period = 3
 
 
 if False:
@@ -222,7 +222,7 @@ while True:
         else:
             status = "on"
         mqtt_client.publish('{}/status/{}'.format(topic_path, status))
-        print(data)
+        #print(data)
 
         if reporting_mode == 'mqtt-json':
             print_line('Publishing to MQTT topic "{}/{}"'.format(base_topic, printer_name))

@@ -18,8 +18,8 @@ To match personal needs, all operation details can be configured using the file 
 The file needs to be created first:
 
 ```shell
-cp /opt/rrf-mqtt-daemon/config.{ini.dist,ini}
-vim /opt/rrf-mqtt-daemon/config.ini
+cp /opt/rrf-mqtt-daemon/src/config.{ini.dist,ini}
+vim /opt/rrf-mqtt-daemon/src/config.ini
 ```
 
 **Attention:**
