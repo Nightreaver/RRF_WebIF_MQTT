@@ -1,5 +1,5 @@
 # Configuration file for RepRap MQTT Client/Daemon
-# Source: https://github.com/ThomDietrich/miflora-mqtt-daemon
+# Source: https://github.com/Nightreaver/RRF_WebIF_MQTT
 #
 # Uncomment and adapt all settings as needed.
 
@@ -9,22 +9,10 @@
 # Currently supported:
 #
 #           mqtt-json - Publish to an MQTT broker in a proprietary json format (Default)
-#          mqtt-homie - Publish to an MQTT broker following the Homie MQTT convention
-#                       (https://github.com/marvinroger/homie)
-#      mqtt-smarthome - Publish to an MQTT broker following the mqtt-smarthome proposal
-#                       (https://github.com/mqtt-smarthome/mqtt-smarthome)
-#  homeassistant-mqtt - Publish to an MQTT broker following the HomeAssistant discovery format
-#                       (https://www.home-assistant.io/docs/mqtt/discovery/)
-#    thingsboard-json - Publish to the ThingsBoard MQTT broker
-#                       (https://thingsboard.io)
-#    wirenboard-mqtt -  Publish to the Wiren Board MQTT broker
-#                       (https://wirenboard.com)
+#
 #                json - Print to stdout as json encoded strings
 #
 #reporting_method = mqtt-json
-
-# The bluetooth adapter that should be used to connect to Mi Flora devices (Default: hci0)
-#adapter = hci0
 
 [Daemon]
 
@@ -32,7 +20,7 @@
 #enabled = true
 
 # The period between two measurements in seconds (Default: 300)
-period = 10
+period = 3
 
 [MQTT]
 
@@ -45,16 +33,16 @@ period = 10
 # Maximum period in seconds between ping messages to the broker. (Default: 60)
 #keepalive = 60
 
-# The MQTT base topic to publish all Mi Flora sensor data topics under.
+# The MQTT base topic to publish all printer sensor data topics under.
 # Default depends on the configured reporting_method
-#base_topic = miflora                   # Default for: mqtt-json, mqtt-smarthome
+#base_topic = reprap                   # Default for: mqtt-json, mqtt-smarthome
 #base_topic = homie                     # Default for: mqtt-homie
 #base_topic = homeassistant             # Default for: homeassistant-mqtt
 #base_topic = v1/devices/me/telemetry   # Default for: thingsboard-json
 #base_topic =                           # Default for: wirenboard-mqtt
 
-# Homie specific: The device ID for this daemon instance (Default: miflora-mqtt-daemon)
-#homie_device_id = miflora-mqtt-daemon
+# Homie specific: The device ID for this daemon instance (Default: rrf-mqtt-daemon)
+#homie_device_id = rrf-mqtt-daemon
 
 # The MQTT broker authentification credentials (Default: no authentication)
 #username = user
@@ -74,11 +62,8 @@ period = 10
 
 [Printers]
 
-# Add your Mi Flora sensors here. Each sensor consists of a name and a Ethernet MAC address.
+# Add your Printers here. Each sensor consists of a name and a IP address.
 # Additional location information can be added to the name, delimited by an '@'.
-# Scan for sensors from the command line with:
-#    $ sudo hcitool lescan
-#
 # Examples:
 #
 # MyPrinter = 192.168.0.251

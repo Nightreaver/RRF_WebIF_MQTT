@@ -19,7 +19,6 @@ import requests
 
 project_name = 'RRF WebGUI MQTT Client/Daemon'
 project_url = 'https://github.com/Nightreaver/RRF_WebIF_MQTT'
-sleep_period = 3
 
 
 if False:
@@ -85,7 +84,7 @@ def get_printer_data(printer, type=3): #3 for printing info #2 for device info
     URL = "http://{}/rr_status?type={}".format(printer, type)
 
     try:
-        r = requests.get(url=URL)
+        r = requests.get(url=URL, timeout=2)
         if r.status_code == 200:
             data = r.json()
         else:
@@ -106,17 +105,21 @@ config.read([os.path.join(config_dir, 'config.ini.dist'), os.path.join(config_di
 
 reporting_mode = config['General'].get('reporting_method', 'mqtt-json')
 daemon_enabled = config['Daemon'].getboolean('enabled', True)
+sleep_period = int(config['Daemon'].get('period', 10))
 
-if reporting_mode == 'mqtt-homie':
-    default_base_topic = 'homie'
-elif reporting_mode == 'homeassistant-mqtt':
-    default_base_topic = 'homeassistant'
-elif reporting_mode == 'thingsboard-json':
-    default_base_topic = 'v1/devices/me/telemetry'
-elif reporting_mode == 'wirenboard-mqtt':
-    default_base_topic = ''
-else:
-    default_base_topic = 'reprap'
+#  I have none of these so cannot test
+# if reporting_mode == 'mqtt-homie':
+#     default_base_topic = 'homie'
+# elif reporting_mode == 'homeassistant-mqtt':
+#     default_base_topic = 'homeassistant'
+# elif reporting_mode == 'thingsboard-json':
+#     default_base_topic = 'v1/devices/me/telemetry'
+# elif reporting_mode == 'wirenboard-mqtt':
+#     default_base_topic = ''
+# else:
+#     default_base_topic = 'mqtt-json'
+
+default_base_topic = 'reprap'
 
 base_topic = config['MQTT'].get('base_topic', default_base_topic).lower()
 device_id = config['MQTT'].get('homie_device_id', 'reprap-mqtt-daemon').lower()
@@ -128,9 +131,8 @@ if reporting_mode not in ['mqtt-json', 'mqtt-homie', 'json', 'mqtt-smarthome', '
 if not config['Printers']:
     print_line('No sensors found in configuration file "config.ini"', error=True, sd_notify=True)
     sys.exit(1)
-if reporting_mode == 'wirenboard-mqtt' and base_topic:
-    print_line('Parameter "base_topic" ignored for "reporting_method = wirenboard-mqtt"', warning=True, sd_notify=True)
-
+#if reporting_mode == 'wirenboard-mqtt' and base_topic:
+#    print_line('Parameter "base_topic" ignored for "reporting_method = wirenboard-mqtt"', warning=True, sd_notify=True)
 
 print_line('Configuration accepted', console=False, sd_notify=True)
 
@@ -188,9 +190,9 @@ for [name, ip] in config['Printers'].items():
     location_clean = clean_identifier(location_pretty)
 
     _printer = dict()
-    print('Adding Printer to device list and testing connection ...')
-    print('Name:          "{}"'.format(name_pretty))
-
+    print_line('Adding Printer to device list and testing connection ...')
+    print_line('Name: "{}"'.format(name_pretty))
+   
     _printer["name"] = name_clean
     _printer["location"] = location_clean
     _printer["ip"] = ip
@@ -203,30 +205,31 @@ if reporting_mode == 'mqtt-json':
 
     printer_info = dict()
     for [printer_name, printer] in printers.items():
-        #print(printer_name)
         printer_ip = printer.get("ip")
-        #print(get_printer_data(printer_ip, 2))
     sleep(0.5)
-    #print()
+    print()
 
 while True:
     for [printer_name, printer] in printers.items():
-        print(printer_name)
         printer_ip = printer.get("ip")
         data = (get_printer_data(printer_ip))
 
-        topic_path = '{}/{}/{}'.format(base_topic, device_id, printer_name)
+        if reporting_mode == "mqtt-homie":
+            topic_path = '{}/{}/{}'.format(base_topic, device_id, printer_name)
+        else:
+            topic_path = '{}/{}'.format(base_topic, printer_name)
 
         if data is None:
-            status = "off"
+            status = "Offline"
         else:
-            status = "on"
+            status = "Online"
         mqtt_client.publish('{}/status/{}'.format(topic_path, status))
         #print(data)
 
         if reporting_mode == 'mqtt-json':
-            print_line('Publishing to MQTT topic "{}/{}"'.format(base_topic, printer_name))
-            mqtt_client.publish('{}/{}'.format(base_topic, printer_name), json.dumps(data))
+            if not data is None:
+                print_line('Publishing json to MQTT topic "{}/{}"'.format(topic_path, "data"))
+                mqtt_client.publish('{}/{}'.format(topic_path, "data"), json.dumps(data))
             sleep(0.5) # some slack for the publish roundtrip and callback function
         elif reporting_mode == 'thingsboard-json':
             pass
@@ -252,4 +255,3 @@ while True:
         if reporting_mode == 'mqtt-json':
             mqtt_client.disconnect()
         break
-

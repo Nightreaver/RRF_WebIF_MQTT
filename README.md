@@ -1,3 +1,21 @@
+<!-- TOC -->
+
+- [Work In Progress](#work-in-progress)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Execution](#execution)
+    - [Continuous Daemon/Service](#continuous-daemonservice)
+  - [(Original) Source](#original-source)
+
+<!-- /TOC -->
+
+
+# Work In Progress
+
+This daemon should provide basic functionality with mqtt-json context and currently undergoes test.  
+It will publish all data received from the RepRap web-api without modifications to the specific MQTT server/Service
+
+
 ## Installation
 
 On a modern Linux system just a few steps are needed to get the daemon working.
@@ -73,3 +91,10 @@ This can be done either by using the internal daemon or cron.
    ```shell
    screen -S rrf-mqtt-daemon -d -m python3 /path/to/rrf-mqtt-daemon/src/service.py
    ```
+
+## (Original) Source
+
+The original source was taken from Thom Dietrich from his [Xiaomi Mi Flora Plant Sensor MQTT Client/Daemon](https://github.com/ThomDietrich/miflora-mqtt-daemon).  
+It was released under MIT license by the time it was copied.  
+  
+**Thanks goes to Thom for all the previous work done with his MQTT Daemon.**
