@@ -176,6 +176,8 @@ if reporting_mode in ['mqtt-json', 'mqtt-homie', 'mqtt-smarthome', 'homeassistan
             mqtt_client.loop_start()
             sleep(1.0) # some slack to establish the connection
 
+sd_notifier.notify('READY=1')
+
 printers = OrderedDict()
 for [name, ip] in config['Printers'].items():
     if not re.match(r"[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}", ip):
