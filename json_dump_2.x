@@ -1,3 +1,4 @@
+# ---------------------------------- Type 1 ---------------------------------- #
 {
 'status': 'P',
 'coords': {
@@ -28,20 +29,7 @@
 'extra': [{'name': '*MCU', 'temp': 25.3}]},
 'time': 2559.0,
 
-
-type3
-'currentLayer': 7,
-'currentLayerTime': 13.1,
-'extrRaw': [887.6],
-'fractionPrinted': 11.6,
-'filePosition': 1897733,
-'firstLayerDuration': 430.7,
-'firstLayerHeight': 0.18,
-'printDuration': 1828.3,
-'warmUpDuration': 197.0,
-'timesLeft': {'file': 10774.6, 'filament': 14083.6, 'layer': 51771.2}}
-
-type2
+# ----------------------------------- Type 2 ---------------------------------- #
 'fanNames': ['', '', '', '', '', '', '', '', ''],
 'names': ['', '', '', '', '', '', '', ''],
 'coldExtrudeTemp': 160.0,
@@ -65,3 +53,15 @@ type2
 'offsets': [0.0, 0.0, 0.0]}],
 'mcutemp': {'min': 23.2, 'cur': 25.4, 'max': 25.7},
 'vin': {'min': 11.1, 'cur': 11.5, 'max': 12.4}}
+
+# ----------------------------------- Type 3 ---------------------------------- #
+'currentLayer': 7,
+'currentLayerTime': 13.1,
+'extrRaw': [887.6],
+'fractionPrinted': 11.6,
+'filePosition': 1897733,
+'firstLayerDuration': 430.7,
+'firstLayerHeight': 0.18,
+'printDuration': 1828.3,
+'warmUpDuration': 197.0,
+'timesLeft': {'file': 10774.6, 'filament': 14083.6, 'layer': 51771.2}}
