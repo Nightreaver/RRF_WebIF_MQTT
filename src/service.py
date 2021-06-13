@@ -111,7 +111,7 @@ def print_line(text, error=False, warning=False, sd_notify=False, console=True):
         sd_notifier.notify("STATUS={} - {}.".format(timestamp_sd, unidecode(text)))
 
 
-def get_printer_data(printer, type=3):  # 3 for printing info #2 for device info
+def get_printer_data(printer, type=3):  # 3 for printing info,2 for device info
     URL = "http://{}/rr_status?type={}".format(printer, type)
 
     try:
@@ -265,9 +265,17 @@ for [name, ip] in config["Printers"].items():
     print_line("Adding Printer to device list and testing connection ...")
     print_line('Name: "{}"'.format(name_pretty))
 
+    p_data = get_printer_data(ip, type=2)
+
     _printer["name"] = name_clean
     _printer["location"] = location_clean
     _printer["ip"] = ip
+    try:
+        _printer["firmare"] = p_data["firmwareName"]
+        _printer["firmareVersion"] = p_data["firmwareVersion"]
+    except TypeError:
+        _printer["firmare"] = "N/A"
+        _printer["firmareVersion"] = "0.0.0"
 
     printers[name_clean] = _printer
 
@@ -275,9 +283,13 @@ for [name, ip] in config["Printers"].items():
 if reporting_mode == "mqtt-json":
     print_line("Announcing devices to MQTT broker for auto-discovery ...")
 
-    printer_info = dict()
+    printers_info = dict()
     for [printer_name, printer] in printers.items():
-        printer_ip = printer.get("ip")
+        printer_info = {key: value for key, value in printer.items() if key not in ["poller", "stats"]}
+        printer_info["topic"] = "{}/{}".format(base_topic, printer_name)
+        printers_info[printer_name] = printer_info
+
+    mqtt_client.publish("{}/$announce".format(base_topic), json.dumps(printers_info), retain=True)
     sleep(0.5)
     print()
 
@@ -298,12 +310,12 @@ while True:
         mqtt_client.publish("{}/status".format(topic_path), payload=status, qos=0, retain=True)
         mqtt_client.will_set("{}/status".format(topic_path), payload="Offline", qos=0, retain=True)
 
-        #print(data)
+        # print(data)
 
         if reporting_mode == "mqtt-json":
             if not data is None:
                 print_line('Publishing json to MQTT topic "{}/{}"'.format(topic_path, "data"))
-                mqtt_client.publish("{}/{}".format(topic_path, "data"), json.dumps(data))
+                mqtt_client.publish("{}/{}".format(topic_path, "data"), payload=json.dumps(data))
             sleep(0.5)  # some slack for the publish roundtrip and callback function
         elif reporting_mode == "thingsboard-json":
             pass
